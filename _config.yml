@@ -1,0 +1,23 @@
+# _config.yml
+
+title: DevOps Portfolio | wacllaw
+description: Hands-on Cloud Engineering & DevOps Projects Documentation
+author: wacllaw
+email: your.email@example.com   # Optional
+
+# Choose a clean theme (these are supported by GitHub Pages)
+theme: jekyll-theme-cayman       # Modern & clean (recommended)
+# theme: jekyll-theme-minimal
+# theme: jekyll-theme-hacker
+# theme: jekyll-theme-slate
+
+# Optional but useful settings
+show_downloads: false
+markdown: kramdown
+highlighter: rouge
+
+# Navigation (optional - creates top menu)
+# You can expand this later
+header_pages:
+  - README.md
+  - projects/lamp-stack/README.md
