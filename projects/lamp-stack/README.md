@@ -2,3 +2,63 @@
 Title: LAMP Stack on AWS EC2
 ---
 # LAMP Stack Implementation on AWS EC2
+![AWS EC2 Dashboard](screenshots/01-aws-console.png)
+## Step 0: What is LAMP Stack?
+
+The **LAMP stack** is a popular open-source web development platform. It consists of four main components:
+
+- **L**inux – The operating system
+- **A**pache – The web server
+- **M**ySQL – The relational database management system
+- **P**HP – The server-side scripting language
+
+Together, these components allow you to build and host dynamic websites and web applications.
+
+### My Environment
+- **Local Machine**: Windows 11 with **WSL (Windows Subsystem for Linux)** + Ubuntu terminal
+- **Cloud**: AWS EC2 (Ubuntu Server 24.04 LTS)
+- **Instance Type**: t3.micro (Free Tier)
+
+I used WSL because I don't have a native Linux laptop. All commands were executed from the Ubuntu terminal in WSL.
+
+---
+
+## Step 1: Launching the EC2 Instance
+
+1. Logged into AWS Management Console → Navigated to **EC2**.
+2. Clicked **Launch instance**.
+3. Configured:
+   - **Name**: `LAMP`
+   - **Software Image (AMI)**: Ubuntu Server 24.04 LTS
+     ![Ubuntu Image](screenshots/03-aws-ubuntu-image.png)
+   - **Instance Type**: `t3.micro`
+   - **Key Pair**: Created `LAMP.pem`
+   - **Security Group**: Opened ports 22 (SSH), 80 (HTTP)
+     ![Security Group](screenshots/02-aws-secgroup-lamp.png)
+     
+   - **Then the instance is launched**
+     ![Running Instance](screenshots/04-aws-running-instance.png)
+
+     ---
+## Step 2: Connecting to EC2 from WSL
+
+1. Downloaded the `.pem` key and moved it to my WSL Ubuntu home directory.
+2. Copied the IP address of the aws ubuntu server and tried connecting to the instance via SSH, but then got an error.
+   ```bash
+   ssh -i LAMP.pem ubuntu@54.175.226.119
+    ```
+   ![permission error](screenshots/05-aws-ssh-error-message.png)
+3. Set correct permissions and connect via SSH
+    ```bash
+    chmod 400 LAMP.pem
+    ssh -i LAMP.pem ubuntu@54.175.226.119
+    ```
+    ![connect via ssh](screenshots/06-aws-chmod-400.png)
+
+## Step 3: Updating System Packages
+
+1. Update the system packages for the instance by running the following command
+   ```bash
+   sudo apt update -y && sudo apt upgrade -y
+   ```
+   ![Sudo apt update](screenshots/07-aws-sudo-apt-update.png)
