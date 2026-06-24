@@ -62,3 +62,5 @@ I used WSL because I don't have a native Linux laptop. All commands were execute
    sudo apt update -y && sudo apt upgrade -y
    ```
    ![Sudo apt update](screenshots/07-aws-sudo-apt-update.png)
+
+
