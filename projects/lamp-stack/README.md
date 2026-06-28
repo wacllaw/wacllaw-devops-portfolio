@@ -99,6 +99,16 @@ sudo systemctl status apache2
    ```bash
    sudo mysql_secure_installation
    ```
-   ![MySql Secure installation](screenshots/13-aws-mysql-already-set-password.png)
+   - Set strong password validation policy
+   - Set a strong root password
+   - Remove anonymous users
+   ![MySql Secure installation](screenshots/13-aws-mysql-set-password.png)
+
+5. Test Login
+   ```bash
+   mysql -u root -p
+   ```
+   ![Test Login](screenshots/13-aws-mysql-set-password.png)
+
 
 
