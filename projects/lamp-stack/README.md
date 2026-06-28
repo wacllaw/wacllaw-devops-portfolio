@@ -63,4 +63,24 @@ I used WSL because I don't have a native Linux laptop. All commands were execute
    ```
    ![Sudo apt update](screenshots/07-aws-sudo-apt-update.png)
 
+## Step 4: Install Apache
+```bash
+sudo apt install apache2 -y
+sudo systemctl start apache2
+sudo systemctl enable apache2
+sudo systemctl status apache2
+```
+![Install Apache](screenshots/08-aws-sudo-install-apache.png)
+![Update Apache](screenshots/09-aws-sudo-update-apache.png)
+
+- Tested by visiting http://ip address → Default Apache page appeared.
+  ![Apache default page](screenshots/10-aws-apache-default.png)
+
+## Step 5: Installing MySQL
+1. Install MySQL server
+   ```bash
+   sudo apt install mysql-server
+   ```
+   ![Install MySQL](screenshots/11-aws-mysql-install.png)
+
 
