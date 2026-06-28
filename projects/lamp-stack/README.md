@@ -82,5 +82,23 @@ sudo systemctl status apache2
    sudo apt install mysql-server
    ```
    ![Install MySQL](screenshots/11-aws-mysql-install.png)
+   
+2. Start and enable service
+   ```bash
+   sudo systemctl start mysql
+   sudo systemctl enable mysql
+   ```
+   
+3. Check Status
+   ```bash
+   sudo systemctl status mysql
+   ```
+   ![Enable mysql](screenshots/12-aws-mysql-status.png)
+
+4. Run secure installation
+   ```bash
+   sudo mysql_secure_installation
+   ```
+   ![MySql Secure installation](screenshots/13-aws-mysql-already-set-password.png)
 
 
