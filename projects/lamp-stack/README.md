@@ -110,5 +110,27 @@ sudo systemctl status apache2
    ```
    ![Test Login](screenshots/13-aws-mysql-set-password.png)
 
+## Step 6: Installing PHP
+1. Install PHP
+```bash
+sudo apt install php libapache2-mod-php php-mysql
+php -v
+```
+![Install PHP](screenshots/14-aws-sudo-install-php.png)
+![PHP Version](screenshots/15-aws-php-version.png)
 
+2. Create Project Directory and Virtual Host
+   ```bash
+   sudo mkdir /var/www/html/projectlamp
+   cd /var/www/html/projectlamp
+   ```
+3. Create test PHP file"
+
+   cat > info.php << EOF
+   <?php
+   phpinfo();
+   ?>
+   EOF
+
+4. 
 
