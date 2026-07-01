@@ -124,13 +124,17 @@ php -v
    sudo mkdir /var/www/html/projectlamp
    cd /var/www/html/projectlamp
    ```
-3. Create test PHP file"
-
-   cat > info.php << EOF
+3. Create test PHP file
+   ```bash
+   sudo nano info.php
    <?php
    phpinfo();
    ?>
-   EOF
+   ```
+   ![info.php](screenshots/18-aws-sudo-nano-info-93.png)
 
-4. 
+4. Create host configuration file
+   ```bash
+   sudo nano /etc/apache2/sites-available/projectlamp.conf
+   ```
 
