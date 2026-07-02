@@ -154,3 +154,13 @@ php -v
    sudo systemctl reload apache2
    ```
    ![Enable site](screenshots/20-aws-enable-site.png)
+
+## Step 7: Testing the LAMP Stack
+1. Visited: http://ip-address/info.php
+   ![info.php](screenshots/21-aws-info-php.png)
+
+## Challenges and Solutions
+1. SSH Permission denied → Fixed with chmod 400 LAMP.pem
+2. MySQL password issues → Used ALTER USER ... WITH mysql_native_password
+3. "Not Found" error → Disabled default site (000-default.conf) and enabled custom virtual host
+4. Authentication required on systemctl → Used sudo
