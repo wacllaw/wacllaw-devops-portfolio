@@ -48,7 +48,7 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 
 ![Configuration Page](screenshots/01-aws-lemp.png)
 >
-> 📸 _Screenshot: Instance successfully running, showing Public IP and Private IP_
+![Running Instance](screenshots/
 
 ### 3.2 Connect to the Instance via SSH
 
