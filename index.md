@@ -14,8 +14,8 @@ This website documents all my hands-on projects as I build real-world skills in 
 | Project | Description | Status |
 |---------|-------------|--------|
 | **[LAMP Stack on AWS](./projects/lamp-stack/README.md)** | Linux, Apache, MySQL, PHP on EC2 | ✅ Completed |
-| **[LEMP Stack on AWS](./projects/lemp-stack/README.md)** | Linux, Nginx, MySQL, PHP | In Progress |
-| **[MERN Stack on AWS](./projects/mern-stack/README.md)** | MongoDB, Express.js, React.js, Node.js | Planned |
+| **[LEMP Stack on AWS](./projects/lemp-stack/README.md)** | Linux, Nginx, MySQL, PHP | ✅ Completed |
+| **[MERN Stack on AWS](./projects/mern-stack/README.md)** | MongoDB, Express.js, React.js, Node.js | In Progress |
 | More projects coming soon... | - | - |
 
 ---
