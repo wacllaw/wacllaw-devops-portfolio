@@ -137,4 +137,20 @@ php -v
    ```bash
    sudo nano /etc/apache2/sites-available/projectlamp.conf
    ```
-
+   - Content of host configuration file
+    ```apache
+   <VirtualHost *:80>
+       ServerName projectlamp
+       ServerAlias www.projectlamp
+       ServerAdmin webmaster@localhost
+       DocumentRoot /var/www/html/projectlamp
+       ErrorLog ${APACHE_LOG_DIR}/error.log
+       CustomLog ${APACHE_LOG_DIR}/access.log combined
+   </VirtualHost>
+   ```
+5. Enable the site
+   ```bash
+   sudo a2ensite projectlamp.conf
+   sudo systemctl reload apache2
+   ```
+   ![Enable site](screenshots/20-aws-enable-site.png)
