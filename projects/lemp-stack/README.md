@@ -138,8 +138,8 @@ Follow the prompts to:
 - Disallow remote root login
 - Remove the test database
 - Reload privilege tables
-
-> 📸 _Screenshot: `mysql_secure_installation` prompts_
+![Secure installation](screenshots/11-mysql-sec-int.png)
+![Secure installation](screenshots/12-mysql-sec-int.png)
 
 ### 5.3 Create a Database and User
 
@@ -164,8 +164,7 @@ EXIT;
 ```
 
 > **Note:** `GRANT ALL PRIVILEGES` gives the specified user full control (create, read, update, delete) over the specified database. `FLUSH PRIVILEGES` reloads the grant tables so that MySQL immediately recognizes the new permissions — it does **not** delete or clear any data.
-
-> 📸 _Screenshot: MySQL console showing database and user creation commands_
+![mysql-password](screenshots/13-create-password-mysql.png)
 
 ### 5.4 Verify Access with the New User
 
