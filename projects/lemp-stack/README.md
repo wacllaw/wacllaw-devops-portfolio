@@ -48,7 +48,7 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 
 ![Configuration Page](screenshots/01-aws-lemp.png)
 >
-![Running Instance](screenshots/
+![Running Instance](screenshots/02-aws-lemp-running.png)
 
 ### 3.2 Connect to the Instance via SSH
 
