@@ -194,6 +194,7 @@ sudo apt install php-fpm php-mysql -y
 
 - **php-fpm** — FastCGI Process Manager; allows NGINX to process PHP requests.
 - **php-mysql** — extension enabling PHP to communicate with MySQL.
+![php version](screenshots/15-install-php.png)
 
 ### 6.2 Verify the PHP Version
 
@@ -202,8 +203,7 @@ php -v
 ```
 
 Expected output: PHP version (e.g. `PHP 8.3`).
-
-> 📸 _Screenshot: PHP version output_
+![php version](screenshots/16-php-version.png)
 
 ---
 
@@ -220,6 +220,7 @@ Confirm the directory was created:
 ```bash
 ls /var/www/
 ```
+![web root directory](screenshots/17-web-root-directory.png)
 
 ### 7.2 Assign Ownership to the Current User
 
