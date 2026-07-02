@@ -279,7 +279,7 @@ Save and exit (Ctrl+O, Enter, then Ctrl+X in `nano`).
 ### 7.4 Enable the Configuration
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/projectLEMP /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/projectlemp /etc/nginx/sites-enabled/
 ```
 
 ### 7.5 Test for Syntax Errors
@@ -290,7 +290,7 @@ sudo nginx -t
 
 You should see a message confirming the syntax is OK and the test was successful.
 
-> 📸 _Screenshot: `nginx -t` success output_
+![nginx syntax test](screenshots/19-nginx-syntax-test.png)
 
 ### 7.6 Disable the Default NGINX Site
 
