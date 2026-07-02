@@ -76,8 +76,9 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 ### 4.1 Update Package Index
 
 ```bash
-sudo apt update
+sudo apt update -y && sudo apt upgrade -y
 ```
+![Sudo apt update](screenshots/04-aws-lemp-sudo-apt-update.png)
 
 ### 4.2 Install NGINX
 
