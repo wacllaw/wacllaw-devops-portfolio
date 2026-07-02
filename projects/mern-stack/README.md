@@ -708,3 +708,82 @@ Replace the contents of `client/src/App.css` and `client/src/index.css` with you
 ![Screenshot: App.css and index.css with final styling applied](screenshots/31-css-styling.png)
 
 ---
+
+## Running and Testing the Complete Application
+
+From the project root, start both servers:
+
+```bash
+npm run dev
+```
+
+Open your browser and navigate to `http://<public-ip-address>:3000`.
+
+![Screenshot: Fully functional To-Do app in the browser with an empty task list](screenshots/32-todo-app-empty.png)
+
+### Add a Task
+
+Type a task into the input field (e.g., "My first task") and click **Add**. The task should appear in the list immediately.
+
+![Screenshot: To-Do app showing a newly added task in the list](screenshots/33-todo-app-task-added.png)
+
+### Add Multiple Tasks
+
+Continue adding tasks — each one should persist and display in the list.
+
+![Screenshot: To-Do app showing multiple tasks listed](screenshots/34-todo-app-multiple-tasks.png)
+
+### Delete a Task
+
+Click on a task to delete it. The list should refresh and no longer display the removed task.
+
+![Screenshot: To-Do app after deleting a task, showing the updated list](screenshots/35-todo-app-task-deleted.png)
+
+### Verify via Postman
+
+Send a `GET` request to `http://<public-ip-address>:5000/api/todos` to confirm the database reflects the current state of tasks shown in the UI.
+
+![Screenshot: Postman GET request confirming database matches the UI state](screenshots/36-postman-final-verification.png)
+
+---
+
+## Summary
+
+By following this guide, you have:
+
+1. Set up a Node.js/Express.js backend server on an AWS EC2 instance.
+2. Created RESTful API routes for creating, reading, and deleting tasks.
+3. Modeled application data using Mongoose and connected it to a MongoDB Atlas database.
+4. Tested all API endpoints using Postman.
+5. Built a React frontend that communicates with the backend via a proxy configuration.
+6. Deployed and tested a fully functional To-Do application using the complete MERN stack.
+
+## Next Steps
+
+The next stack to explore is the **MEAN stack** (MongoDB, Express.js, Angular, Node.js), which replaces React with Angular as the frontend framework.
+
+---
+
+## Appendix: Common Commands Reference
+
+| Task | Command |
+|---|---|
+| Update packages | `sudo apt update && sudo apt upgrade -y` |
+| Install Node.js | `sudo apt install nodejs -y` |
+| Install NPM | `sudo apt install npm -y` |
+| Initialize project | `npm init` |
+| Install Express | `npm install express` |
+| Install dotenv | `npm install dotenv` |
+| Install Mongoose | `npm install mongoose` |
+| Install dev dependencies | `npm install concurrently nodemon --save-dev` |
+| Create React app | `npx create-react-app client` |
+| Install Axios | `npm install axios` |
+| Run both servers | `npm run dev` |
+| Start server only | `node index.js` |
+
+## Appendix: Ports Used
+
+| Port | Purpose |
+|---|---|
+| 5000 | Backend (Express/Node.js API) |
+| 3000 | Frontend (React development server) |
