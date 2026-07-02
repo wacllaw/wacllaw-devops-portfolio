@@ -252,7 +252,7 @@ server {
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.5-fpm.sock;
     }
 
     location ~ /\.ht {
@@ -331,12 +331,12 @@ Save and exit.
 Navigate to:
 
 ```
-http://<public-ip-address>
+http://100.52.229.197
 ```
 
 You should see the default **PHP Info** page, displaying details about your PHP configuration and version.
 
-> 📸 _Screenshot: PHP Info page displayed in browser_
+![php info page](screenshots/22-php-info.png)
 
 ---
 
@@ -358,6 +358,6 @@ This confirms a fully functional **LEMP stack** (Linux, NGINX, MySQL, PHP) runni
 
 ## 10. Notes / Troubleshooting
 
-- If `nginx -t` reports errors, revisit the server block configuration for typos, especially in the `fastcgi_pass` socket path (must match your installed PHP version, e.g. `php8.3-fpm.sock`).
+- If `nginx -t` reports errors, revisit the server block configuration for typos, especially in the `fastcgi_pass` socket path (must match your installed PHP version, e.g. `php8.5-fpm.sock`).
 - If the instance is stopped/restarted, note that the **Public IP** may change (unless an Elastic IP is assigned), while the **Private IP** typically remains the same.
 - To avoid ongoing AWS charges, terminate the instance once the project has been submitted and assessed, unless it's needed for a dependent follow-up project.
