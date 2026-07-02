@@ -212,7 +212,7 @@ Expected output: PHP version (e.g. `PHP 8.3`).
 ### 7.1 Create the Website Root Directory
 
 ```bash
-sudo mkdir /var/www/projectLEMP
+sudo mkdir /var/www/projectlemp
 ```
 
 Confirm the directory was created:
@@ -225,7 +225,7 @@ ls /var/www/
 ### 7.2 Assign Ownership to the Current User
 
 ```bash
-sudo chown -R $USER:$USER /var/www/projectLEMP
+sudo chown -R $USER:$USER /var/www/projectlemp
 ```
 
 `$USER` is an environment variable referring to the currently logged-in user.
@@ -233,7 +233,7 @@ sudo chown -R $USER:$USER /var/www/projectLEMP
 ### 7.3 Create an NGINX Server Block Configuration
 
 ```bash
-sudo nano /etc/nginx/sites-available/projectLEMP
+sudo nano /etc/nginx/sites-available/projectlemp
 ```
 
 Paste in the following configuration block (adjust `server_name` and paths as needed):
@@ -241,8 +241,8 @@ Paste in the following configuration block (adjust `server_name` and paths as ne
 ```nginx
 server {
     listen 80;
-    server_name projectLEMP www.projectLEMP;
-    root /var/www/projectLEMP;
+    server_name projectlemp www.projectlemp;
+    root /var/www/projectlemp;
 
     index index.html index.htm index.php;
 
@@ -274,7 +274,7 @@ server {
 
 Save and exit (Ctrl+O, Enter, then Ctrl+X in `nano`).
 
-> 📸 _Screenshot: NGINX server block configuration file contents_
+![nano edit](screenshots/18-nano-edit.png)
 
 ### 7.4 Enable the Configuration
 
