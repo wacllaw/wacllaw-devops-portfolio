@@ -116,13 +116,14 @@ Navigate to `http://100.52.229.197` in your browser. You should see the default 
 
 ## 5. Installing MySQL (Database)
 
-### 5.1 Install MySQL Server
+### 5.1 Install MySQL Server and Verify That It's Running
 
 ```bash
 sudo apt install mysql-server -y
+sudo systemctl status mysql
 ```
-
-> 📸 _Screenshot: MySQL server installation in progress/complete_
+![install mysql](screenshots/09-install-mysql.png)
+![verify mysql](screenshots/10-verify-mysql.png)
 
 ### 5.2 Secure the MySQL Installation
 
