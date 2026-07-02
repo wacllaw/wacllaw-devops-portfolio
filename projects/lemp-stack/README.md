@@ -303,6 +303,7 @@ sudo unlink /etc/nginx/sites-enabled/default
 ```bash
 sudo systemctl reload nginx
 ```
+![reload nginx](screenshots/20-nginx-reload.png)
 
 ---
 
@@ -311,7 +312,7 @@ sudo systemctl reload nginx
 ### 8.1 Create a PHP Info File
 
 ```bash
-cd /var/www/projectLEMP
+cd /var/www/projectlemp
 sudo nano index.php
 ```
 
@@ -323,6 +324,7 @@ phpinfo();
 ```
 
 Save and exit.
+![php file](screenshots/21-php-contents.png)
 
 ### 8.2 Verify in the Browser
 
