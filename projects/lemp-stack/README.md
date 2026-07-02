@@ -56,16 +56,18 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 2. In your terminal, run:
 
    ```bash
-   ssh -i /path/to/your-key.pem ubuntu@<public-ip-address>
+   chmod 400 LEMP.pem
+   ssh -i LEMP.pem ubuntu@100.52.229.197
    ```
 
+   - `chmod 400` sets the right permissions
    - `ssh` initiates the secure connection.
    - `-i` specifies the private key file used for authentication.
    - `ubuntu` is the default username for Ubuntu AMIs.
 
-3. If successful, you should be logged into the remote server as the `ubuntu` user.
+4. If successful, you should be logged into the remote server as the `ubuntu` user.
 
-> 📸 _Screenshot: Successful SSH connection into the EC2 instance_
+![Successful ssh](screenshots/03-aws-lemp-ssh.png)
 
 ---
 
