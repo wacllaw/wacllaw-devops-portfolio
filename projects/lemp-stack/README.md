@@ -79,38 +79,38 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 sudo apt update -y && sudo apt upgrade -y
 ```
 ![Sudo apt update](screenshots/04-aws-lemp-sudo-apt-update.png)
+- Reboot the instance for the upgrades to take effect
 
 ### 4.2 Install NGINX
 
 ```bash
 sudo apt install nginx -y
 ```
+![Install Nginx](screenshots/05-aws-lemp-nginx-install.png)
 
 ### 4.3 Verify NGINX Is Running
 
 ```bash
 sudo systemctl status nginx
 ```
+![Verify Nginx](screenshots/06-nginx-verify.png)
 
-You should see a status of **active (running)**, typically highlighted in green.
+You can see a status of **active (running)**, highlighted in green.
 
-> 📸 _Screenshot: `systemctl status nginx` showing active/running status_
 
 ### 4.4 Verify Web Server Accessibility
 
 **Option A — via terminal (curl):**
 
 ```bash
-curl http://<public-ip-address>
+curl http://100.52.229.197
 ```
+![Curl Nginx](screenshots/07-curl-nginx.png)
 
 **Option B — via browser:**
 
-Navigate to `http://<public-ip-address>` in your browser. You should see the default **"Welcome to nginx!"** page.
-
-> 📸 _Screenshot: `curl` output confirming NGINX response_
->
-> 📸 _Screenshot: "Welcome to nginx!" page in browser_
+Navigate to `http://100.52.229.197` in your browser. You should see the default **"Welcome to nginx!"** page.
+![Open Nginx in browser](screenshots/08-open-nginx.png)
 
 ---
 
