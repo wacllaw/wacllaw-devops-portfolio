@@ -468,3 +468,243 @@ Send a GET request again to confirm the task was removed.
 
 ---
 
+## Part 2: Frontend Configuration
+
+### Step 1: Create the React Application
+
+From the project root directory, scaffold a new React app called `client`:
+
+```bash
+npx create-react-app client
+```
+
+This installs all necessary React dependencies in one step.
+
+![Screenshot: Terminal output after create-react-app finishes installing](screenshots/23-create-react-app.png)
+
+### Step 2: Install Supporting Dependencies
+
+From the **project root** (not inside `client`), install `concurrently` and `nodemon`:
+
+```bash
+npm install concurrently --save-dev
+npm install nodemon --save-dev
+```
+
+- **concurrently** — runs multiple commands (frontend + backend) simultaneously from a single terminal.
+- **nodemon** — automatically restarts the server whenever backend code changes.
+
+### Step 3: Update package.json Scripts
+
+Open the root `package.json` and replace the `scripts` section:
+
+```json
+"scripts": {
+  "start": "node index.js",
+  "start-watch": "nodemon index.js",
+  "dev": "concurrently \"npm run start-watch\" \"cd client && npm start\""
+}
+```
+
+![Screenshot: Root package.json showing updated scripts section](screenshots/24-package-json-scripts.png)
+
+### Step 4: Configure the React Proxy
+
+Navigate into the `client` folder and open its `package.json`. Add a `proxy` setting:
+
+```json
+"proxy": "http://localhost:5000"
+```
+
+**Why this matters:** Since the backend runs on port `5000` and the React frontend runs on port `3000`, the proxy setting allows the frontend to make API calls (e.g., `/api/todos`) without specifying the full backend URL each time. This simplifies development when running both servers on the same machine.
+
+![Screenshot: client/package.json showing the proxy configuration](screenshots/25-client-proxy-config.png)
+
+### Step 5: Run Both Servers Concurrently
+
+From the project root:
+
+```bash
+npm run dev
+```
+
+You should see confirmation that the backend is connected, followed by the React development server starting.
+
+![Screenshot: Terminal showing both backend and frontend running via npm run dev](screenshots/26-npm-run-dev.png)
+
+### Step 6: Open Port 3000 in AWS Security Group
+
+Just like port 5000, open port 3000 in your EC2 security group:
+
+1. Go to **Security Groups** → **Inbound Rules**.
+2. Add a new rule for port `3000`, source `Anywhere`.
+3. Click **Save**.
+
+![Screenshot: AWS Security Group inbound rules showing port 3000 opened](screenshots/27-security-group-port3000.png)
+
+Visit `http://<public-ip-address>:3000` in your browser to see the default React welcome page.
+
+![Screenshot: Browser showing the default React app landing page](screenshots/28-default-react-page.png)
+
+---
+
+### Step 7: Create React Components
+
+Inside `client/src`, create a `components` directory with three files:
+
+```bash
+cd client/src
+mkdir components
+cd components
+touch Input.js ListTodo.js Todo.js
+```
+
+![Screenshot: File listing showing Input.js, ListTodo.js, and Todo.js inside components/](screenshots/29-components-directory.png)
+
+#### Input.js
+
+Handles the input field and submission for new tasks:
+
+```javascript
+import React, { useState } from 'react';
+import axios from 'axios';
+
+const Input = () => {
+  const [action, setAction] = useState('');
+
+  const handleChange = (event) => {
+    setAction(event.target.value);
+  };
+
+  const addTodo = () => {
+    const task = { action };
+
+    if (task.action && task.action.length > 0) {
+      axios.post('/api/todos', task)
+        .then((res) => {
+          if (res.data) {
+            window.location.reload();
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
+  return (
+    <div>
+      <input type="text" onChange={handleChange} value={action} />
+      <button onClick={addTodo}>Add</button>
+    </div>
+  );
+};
+
+export default Input;
+```
+
+#### Step 8: Install Axios
+
+Axios is a promise-based HTTP client used to make requests from React to the backend API.
+
+```bash
+cd client
+npm install axios
+```
+
+#### ListTodo.js
+
+Renders the list of tasks and provides deletion functionality:
+
+```javascript
+import React from 'react';
+
+const ListTodo = ({ todos, deleteTodo }) => {
+  return (
+    <ul>
+      {todos && todos.length > 0 ? (
+        todos.map((todo) => (
+          <li key={todo._id} onClick={() => deleteTodo(todo._id)}>
+            {todo.action}
+          </li>
+        ))
+      ) : (
+        <li>No todo(s) left</li>
+      )}
+    </ul>
+  );
+};
+
+export default ListTodo;
+```
+
+#### Todo.js
+
+The main component that fetches tasks and combines `Input` and `ListTodo`:
+
+```javascript
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Input from './Input';
+import ListTodo from './ListTodo';
+
+const Todo = () => {
+  const [todos, setTodos] = useState([]);
+
+  const getTodos = () => {
+    axios.get('/api/todos')
+      .then((res) => setTodos(res.data))
+      .catch((err) => console.log(err));
+  };
+
+  const deleteTodo = (id) => {
+    axios.delete(`/api/todos/${id}`)
+      .then((res) => {
+        if (res.data) getTodos();
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    getTodos();
+  }, []);
+
+  return (
+    <div>
+      <h1>My Todo(s)</h1>
+      <Input />
+      <ListTodo todos={todos} deleteTodo={deleteTodo} />
+    </div>
+  );
+};
+
+export default Todo;
+```
+
+![Screenshot: Todo.js, Input.js, and ListTodo.js files open in the editor](screenshots/30-components-code.png)
+
+### Step 9: Update App.js
+
+Replace the contents of `client/src/App.js`:
+
+```javascript
+import React from 'react';
+import Todo from './components/Todo';
+import './App.css';
+
+const App = () => {
+  return (
+    <div className="App">
+      <Todo />
+    </div>
+  );
+};
+
+export default App;
+```
+
+### Step 10: Update Styling
+
+Replace the contents of `client/src/App.css` and `client/src/index.css` with your preferred styling for the to-do list layout (input field, button, and list items).
+
+![Screenshot: App.css and index.css with final styling applied](screenshots/31-css-styling.png)
+
+---
