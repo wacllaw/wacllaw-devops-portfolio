@@ -164,3 +164,13 @@ php -v
 2. MySQL password issues → Used ALTER USER ... WITH mysql_native_password
 3. "Not Found" error → Disabled default site (000-default.conf) and enabled custom virtual host
 4. Authentication required on systemctl → Used sudo
+
+## Conclusion
+Successfully deployed a fully functional LAMP Stack on AWS EC2 using Ubuntu 24.04.
+
+### Skills Demonstrated:
+1. AWS EC2 Instance provisioning
+2. Linux server administration
+3. LAMP Stack configuration
+4. Virtual Host setup
+5. Troubleshooting & Documentation
