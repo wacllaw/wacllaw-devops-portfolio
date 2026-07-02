@@ -35,7 +35,7 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 3. Click **Launch Instance**.
 4. Give the instance a name (e.g. `lemp-server`).
 5. Choose the **Ubuntu** Amazon Machine Image (AMI) for stability.
-6. Select **t2.micro** as the instance type (Free Tier eligible).
+6. Select **t3.micro** as the instance type (Free Tier eligible).
 7. Configure the key pair:
    - Create a new key pair, **or**
    - Select an existing key pair.
@@ -46,7 +46,7 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 10. Review the configuration summary, then click **Launch Instance**.
 11. Wait for the instance to initialize until its status shows **Running**.
 
-> 📸 _Screenshot: EC2 instance configuration page_
+![Configuration Page](screenshots/01-aws-lemp.png)
 >
 > 📸 _Screenshot: Instance successfully running, showing Public IP and Private IP_
 
