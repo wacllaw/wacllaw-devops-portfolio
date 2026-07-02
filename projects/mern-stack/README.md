@@ -126,3 +126,194 @@ Create the main server file:
 touch index.js
 ```
 
+### Step 8: Install the dotenv Module
+
+The `dotenv` module manages environment configuration in a single, centralized file.
+
+```bash
+npm install dotenv
+```
+
+### Step 9: Configure the Express Server
+
+Open `index.js` and add the server configuration to listen on port `5000`:
+
+```javascript
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 5000;
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+app.use((req, res, next) => {
+  res.send('Welcome to Express');
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+```
+
+Start the server:
+
+```bash
+node index.js
+```
+
+You should see: `Server running on port 5000`
+
+![Screenshot: Terminal showing "Server running on port 5000" message](screenshots/05-server-running.png)
+
+### Step 10: Open Port 5000 in AWS Security Group
+
+To access the server from the browser, open port 5000 in your EC2 instance's security group:
+
+1. Go to the **AWS Management Console** → **EC2** → **Security Groups**.
+2. Select the inbound rules for your instance.
+3. Click **Add new rule**.
+4. Set **Port** to `5000`, **Source** to `Anywhere (0.0.0.0/0)`.
+5. Click **Save rules**.
+
+![Screenshot: AWS Security Group inbound rules showing port 5000 opened](screenshots/06-security-group-port5000.png)
+
+Test it by visiting `http://<public-ip-address>:5000` in your browser. You should see "Welcome to Express."
+
+![Screenshot: Browser showing "Welcome to Express" message](screenshots/07-welcome-express-browser.png)
+
+---
+
+### Step 11: Create Routes
+
+Routes handle the core functionality of the app: creating, retrieving, and deleting tasks.
+
+```bash
+mkdir routes
+cd routes
+touch api.js
+```
+
+Open `api.js` and add the route logic:
+
+```javascript
+const express = require('express');
+const router = express.Router();
+const Todo = require('../models/todo');
+
+router.get('/todos', (req, res, next) => {
+  Todo.find({}, (err, data) => {
+    if (err) return next(err);
+    res.json(data);
+  });
+});
+
+router.post('/todos', (req, res, next) => {
+  if (req.body.action === "") return res.json({ error: "Input field required" });
+  const todo = new Todo({ action: req.body.action });
+  todo.save((err, data) => {
+    if (err) return next(err);
+    res.json(data);
+  });
+});
+
+router.delete('/todos/:id', (req, res, next) => {
+  Todo.findOneAndDelete({ _id: req.params.id }, (err, data) => {
+    if (err) return next(err);
+    res.json(data);
+  });
+});
+
+module.exports = router;
+```
+
+![Screenshot: routes/api.js file with route definitions](screenshots/08-api-js-routes.png)
+
+### Step 12: Install Mongoose
+
+Since MongoDB is a NoSQL database, we use **Mongoose** to define schemas (blueprints) for our data.
+
+```bash
+npm install mongoose
+```
+
+### Step 13: Create the Data Model
+
+```bash
+mkdir models
+cd models
+touch todo.js
+```
+
+Add the schema definition in `todo.js`:
+
+```javascript
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
+const TodoSchema = new Schema({
+  action: {
+    type: String,
+    required: [true, 'The todo text field is required']
+  }
+});
+
+const Todo = mongoose.model('todo', TodoSchema);
+module.exports = Todo;
+```
+
+![Screenshot: models/todo.js file with schema definition](screenshots/09-todo-model.png)
+
+### Step 14: Update Routes to Use the Model
+
+Return to `routes/api.js` and ensure it references the `Todo` model created above (see Step 11's updated code, which already imports it).
+
+---
+
+### Step 15: Set Up MongoDB Atlas (Database)
+
+1. Go to [MongoDB Atlas](https://www.mongodb.com/atlas) and create an account.
+2. Deploy a new cluster, selecting the **free tier**.
+3. Name the cluster (e.g., `to-do-db`).
+4. Choose **AWS** as the cloud provider and select a region closest to you.
+5. Click **Create Cluster**.
+
+![Screenshot: MongoDB Atlas cluster creation page](screenshots/10-atlas-cluster-creation.png)
+
+#### Create Database Credentials
+
+1. Create a database username and password.
+2. Click **Create Database User**.
+
+![Screenshot: MongoDB Atlas database user creation form](screenshots/11-atlas-db-user.png)
+
+#### Configure Network Access
+
+1. Go to **Network Access**.
+2. Click **Add New IP Address**.
+3. Select **Allow Access from Anywhere**.
+4. Set the temporary access duration (e.g., one week) if prompted.
+5. Click **Save**.
+
+![Screenshot: MongoDB Atlas Network Access settings showing "Allow access from anywhere"](screenshots/12-atlas-network-access.png)
+
+#### Create a Database and Collection
+
+1. Return to the cluster page and click **Browse Collections**.
+2. Click **Create Database**.
+3. Specify a database name and a collection name.
+4. Click **Create**.
+
+![Screenshot: MongoDB Atlas collections view showing newly created database](screenshots/13-atlas-create-database.png)
+
+#### Get the Connection String
+
+1. Go back to the cluster and click **Connect**.
+2. Select **Drivers**, and choose **Node.js** as the driver.
+3. Copy the provided connection string.
+
+![Screenshot: MongoDB Atlas connection string dialog](screenshots/14-atlas-connection-string.png)
+
+---
