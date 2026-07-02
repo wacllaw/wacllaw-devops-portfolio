@@ -180,7 +180,7 @@ SHOW DATABASES;
 
 You should see `testdb` listed.
 
-> 📸 _Screenshot: Logged in as `test` user, `testdb` visible in database list_
+![mysql-password-testdb-test](screenshots/14-test-mysql-password.png)
 
 ---
 
