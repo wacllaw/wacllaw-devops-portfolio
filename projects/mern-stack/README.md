@@ -205,31 +205,45 @@ const express = require('express');
 const router = express.Router();
 const Todo = require('../models/todo');
 
-router.get('/todos', (req, res, next) => {
-  Todo.find({}, (err, data) => {
-    if (err) return next(err);
+router.get('/todos', async (req, res, next) => {
+  try {
+    const data = await Todo.find({});
     res.json(data);
-  });
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.post('/todos', (req, res, next) => {
-  if (req.body.action === "") return res.json({ error: "Input field required" });
-  const todo = new Todo({ action: req.body.action });
-  todo.save((err, data) => {
-    if (err) return next(err);
+router.post('/todos', async (req, res, next) => {
+  try {
+    if (req.body.action === "") {
+      return res.json({ error: "Input field required" });
+    }
+    const todo = new Todo({ action: req.body.action });
+    const data = await todo.save();
     res.json(data);
-  });
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.delete('/todos/:id', (req, res, next) => {
-  Todo.findOneAndDelete({ _id: req.params.id }, (err, data) => {
-    if (err) return next(err);
+router.delete('/todos/:id', async (req, res, next) => {
+  try {
+    const data = await Todo.findOneAndDelete({ _id: req.params.id });
     res.json(data);
-  });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
 ```
+
+> **Troubleshooting: `Model.find() no longer accepts a callback`**
+>
+> Newer versions of Mongoose (6+) removed callback support for queries like `.find()`, `.save()`, and `.findOneAndDelete()` — they only accept Promises now (via `.then()` or `async/await`). If your routes are written in the older callback style, every request will fail with a `500 Internal Server Error` and this message in the response body.
+>
+> **Fix:** Rewrite the route handlers using `async/await` and `try/catch`, as shown in the `api.js` code above. Save the file, restart the server with `node index.js`, and retry the request in Postman — it should now return the expected data (or an empty array `[]` if the database has no tasks yet) instead of a 500 error.
 
 ![Screenshot: routes/api.js file with route definitions](screenshots/08-api-js-routes.png)
 
@@ -407,6 +421,47 @@ You should now see: `Database connected successfully`
 > ```
 >
 > Save `index.js` and run `node index.js` again — the server should now connect successfully.
+
+> **Troubleshooting: `MongoServerError: bad auth : authentication failed`**
+>
+> This means MongoDB Atlas is rejecting the username/password in your connection string. Common causes:
+>
+> 1. **Special characters in the password** that aren't URL-encoded (e.g., `@`, `#`, `%`, `:`, `/`, `?`, `$`). These must be percent-encoded, or replaced with a simpler alphanumeric-only password.
+> 2. **Wrong username or password** — a typo, or the placeholder text wasn't fully replaced.
+> 3. **Leftover angle brackets** (`<` `>`) around the actual username/password values in the `.env` file.
+> 4. **The database user doesn't exist** for the project/cluster you're connecting to.
+>
+> **Fix:**
+>
+> - Go to Atlas → **Database Access** and confirm the exact username, or click **Edit** to reset the password to something alphanumeric only (avoids encoding issues entirely).
+> - Update the `.env` file with the correct credentials, making sure no `<`, `>`, or extra characters remain:
+>
+> ```
+> DB = 'mongodb+srv://<username>:<password>@<cluster-url>/<database>?retryWrites=true&w=majority'
+> ```
+>
+> - Save and restart the server:
+>
+> ```bash
+> node index.js
+> ```
+
+> **Troubleshooting: Special characters in the password break the connection string**
+>
+> If your database password contains characters like `$`, `@`, `#`, `%`, `:`, `/`, or `?`, the connection string will fail to parse correctly (often surfacing as the `bad auth` error above), because these characters have special meaning inside a URI.
+>
+> **Fix:** URL-encode the character in your `.env` file. For example, a password like `Test123$` must be written as `Test123%24` (since `$` encodes to `%24`). Common encodings:
+>
+> | Character | Encoded |
+> |---|---|
+> | `$` | `%24` |
+> | `@` | `%40` |
+> | `#` | `%23` |
+> | `%` | `%25` |
+> | `:` | `%3A` |
+> | `/` | `%2F` |
+>
+> **Simplest long-term fix:** reset the database user's password in Atlas → **Database Access** to something alphanumeric only (letters + numbers, no symbols) — this avoids encoding issues entirely.
 
 ---
 
