@@ -166,6 +166,7 @@ node index.js
 
 You should see: `Server running on port 5000`
 
+![Screenshot: Terminal showing "Configure index.js" message](screenshots/045-server-running.png)
 ![Screenshot: Terminal showing "Server running on port 5000" message](screenshots/05-server-running.png)
 
 ### Step 10: Open Port 5000 in AWS Security Group
@@ -179,6 +180,7 @@ To access the server from the browser, open port 5000 in your EC2 instance's sec
 5. Click **Save rules**.
 
 ![Screenshot: AWS Security Group inbound rules showing port 5000 opened](screenshots/06-security-group-port5000.png)
+![Screenshot: AWS Security Group inbound rules showing port 5000 opened](screenshots/061-security-group-port5000.png)
 
 Test it by visiting `http://<public-ip-address>:5000` in your browser. You should see "Welcome to Express."
 
@@ -287,6 +289,7 @@ Return to `routes/api.js` and ensure it references the `Todo` model created abov
 1. Create a database username and password.
 2. Click **Create Database User**.
 
+![Screenshot: MongoDB Atlas database user creation form](screenshots/101-atlas-db-user.png)
 ![Screenshot: MongoDB Atlas database user creation form](screenshots/11-atlas-db-user.png)
 
 #### Configure Network Access
