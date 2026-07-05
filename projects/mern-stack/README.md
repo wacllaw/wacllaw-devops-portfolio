@@ -2,7 +2,7 @@
 
 ## Overview
 
-This documentation walks through the implementation of a full-stack **To-Do application** using the **MERN stack**. It covers backend setup, database configuration, API testing, and frontend development, resulting in a complete web application deployed on an AWS EC2 instance.
+This documentation walks through my implementation of a full-stack **To-Do application** using the **MERN stack**. It covers backend setup, database configuration, API testing, and frontend development, resulting in a complete web application deployed on an AWS EC2 instance.
 
 ### What is the MERN Stack?
 
@@ -19,7 +19,7 @@ Together, these four technologies form a complete framework for building dynamic
 
 ### Project Scope
 
-We will build a simple **To-Do application** that allows users to:
+I built a simple **To-Do application** that allows users to:
 - Create tasks
 - View (retrieve) tasks
 - Delete tasks
@@ -28,7 +28,7 @@ We will build a simple **To-Do application** that allows users to:
 - **Backend:** Node.js + Express.js
 - **Database:** MongoDB
 
-The project is divided into two major parts:
+The project was divided into two major parts:
 1. **Backend configuration** (server, database, API routes)
 2. **Frontend configuration** (React UI)
 
@@ -239,11 +239,11 @@ router.delete('/todos/:id', async (req, res, next) => {
 module.exports = router;
 ```
 
-> **Troubleshooting: `Model.find() no longer accepts a callback`**
+> **I ran into this: `Model.find() no longer accepts a callback`**
 >
-> Newer versions of Mongoose (6+) removed callback support for queries like `.find()`, `.save()`, and `.findOneAndDelete()` — they only accept Promises now (via `.then()` or `async/await`). If your routes are written in the older callback style, every request will fail with a `500 Internal Server Error` and this message in the response body.
+> When I first wrote these routes using the older callback style (`Todo.find({}, (err, data) => {...})`), every request failed with a `500 Internal Server Error`. This is because newer versions of Mongoose (6+) removed callback support for queries like `.find()`, `.save()`, and `.findOneAndDelete()` — they only accept Promises now.
 >
-> **Fix:** Rewrite the route handlers using `async/await` and `try/catch`, as shown in the `api.js` code above. Save the file, restart the server with `node index.js`, and retry the request in Postman — it should now return the expected data (or an empty array `[]` if the database has no tasks yet) instead of a 500 error.
+> **How I fixed it:** I rewrote the route handlers using `async/await` and `try/catch`, as shown in the `api.js` code above. After saving the file and restarting the server with `node index.js`, retrying the request in Postman returned the expected data instead of a 500 error.
 
 ![Screenshot: routes/api.js file with route definitions](screenshots/08-api-js-routes.png)
 
@@ -408,11 +408,11 @@ You should now see: `Database connected successfully`
 
 ![Screenshot: Terminal showing "Database connected successfully" message](screenshots/16-database-connected.png)
 
-> **Troubleshooting: `MongoParseError: options usenewurlparser, useunifiedtopology are not supported`**
+> **I ran into this: `MongoParseError: options usenewurlparser, useunifiedtopology are not supported`**
 >
-> If you're using a newer version of the MongoDB Node.js driver (which Mongoose relies on), you may see this error when starting the server. The `useNewUrlParser` and `useUnifiedTopology` options were required in older driver versions but are now default behavior — recent driver versions reject them instead of silently ignoring them.
+> I was using a newer version of the MongoDB Node.js driver (which Mongoose relies on), and it rejected the `useNewUrlParser` and `useUnifiedTopology` options I'd included in my `mongoose.connect()` call. These flags were required in older driver versions but are now default behavior, so recent versions reject them outright instead of ignoring them.
 >
-> **Fix:** Remove both options from the `mongoose.connect()` call so it looks like this:
+> **How I fixed it:** I removed both options from the `mongoose.connect()` call so it looked like this:
 >
 > ```javascript
 > mongoose.connect(process.env.DB)
@@ -420,37 +420,39 @@ You should now see: `Database connected successfully`
 >   .catch(err => console.log(err));
 > ```
 >
-> Save `index.js` and run `node index.js` again — the server should now connect successfully.
+> After saving `index.js` and running `node index.js` again, the server connected successfully.
 
-> **Troubleshooting: `MongoServerError: bad auth : authentication failed`**
+> **I ran into this: `MongoServerError: bad auth : authentication failed`**
 >
-> This means MongoDB Atlas is rejecting the username/password in your connection string. Common causes:
+> MongoDB Atlas was rejecting the username/password in my connection string. In my case, and in general, this can come from:
 >
 > 1. **Special characters in the password** that aren't URL-encoded (e.g., `@`, `#`, `%`, `:`, `/`, `?`, `$`). These must be percent-encoded, or replaced with a simpler alphanumeric-only password.
 > 2. **Wrong username or password** — a typo, or the placeholder text wasn't fully replaced.
 > 3. **Leftover angle brackets** (`<` `>`) around the actual username/password values in the `.env` file.
 > 4. **The database user doesn't exist** for the project/cluster you're connecting to.
 >
-> **Fix:**
+> **How I fixed it:**
 >
-> - Go to Atlas → **Database Access** and confirm the exact username, or click **Edit** to reset the password to something alphanumeric only (avoids encoding issues entirely).
-> - Update the `.env` file with the correct credentials, making sure no `<`, `>`, or extra characters remain:
+> - I went to Atlas → **Database Access** and confirmed the exact username, then reset the password to something alphanumeric only (avoiding encoding issues entirely).
+> - I updated the `.env` file with the correct credentials, making sure no `<`, `>`, or extra characters remained:
 >
 > ```
 > DB = 'mongodb+srv://<username>:<password>@<cluster-url>/<database>?retryWrites=true&w=majority'
 > ```
 >
-> - Save and restart the server:
+> - I saved and restarted the server:
 >
 > ```bash
 > node index.js
 > ```
+>
+> This didn't fully resolve it on the first try — see the next two notes for what actually got it working.
 
-> **Troubleshooting: Special characters in the password break the connection string**
+> **I ran into this: special characters in the password breaking the connection string**
 >
-> If your database password contains characters like `$`, `@`, `#`, `%`, `:`, `/`, or `?`, the connection string will fail to parse correctly (often surfacing as the `bad auth` error above), because these characters have special meaning inside a URI.
+> My database password contained a `$` character, which broke the parsing of the connection string, since characters like `$`, `@`, `#`, `%`, `:`, `/`, and `?` have special meaning inside a URI. This surfaced as the same `bad auth` error above.
 >
-> **Fix:** URL-encode the character in your `.env` file. For example, a password like `Test123$` must be written as `Test123%24` (since `$` encodes to `%24`). Common encodings:
+> **How I fixed it:** I URL-encoded the character in my `.env` file — my password `Test123$` became `Test123%24` (since `$` encodes to `%24`). Common encodings:
 >
 > | Character | Encoded |
 > |---|---|
@@ -461,7 +463,13 @@ You should now see: `Database connected successfully`
 > | `:` | `%3A` |
 > | `/` | `%2F` |
 >
-> **Simplest long-term fix:** reset the database user's password in Atlas → **Database Access** to something alphanumeric only (letters + numbers, no symbols) — this avoids encoding issues entirely.
+> If you'd rather not deal with encoding at all, resetting the database user's password in Atlas → **Database Access** to something alphanumeric only (letters + numbers, no symbols) avoids the issue entirely.
+
+> **I ran into this: `bad auth` persisting even with a correctly encoded password**
+>
+> After fixing the encoding, I was still getting `bad auth`. It turned out the database user I'd created only had an **Atlas admin** role assigned — which is a project-level/organization role controlling what I could do in the Atlas UI, not a **database role** controlling what the user could do when authenticating from a connection string. Without a proper database role like **Read and write to any database**, authentication fails even with the correct password.
+>
+> **How I fixed it:** I went to Atlas → **Database Access**, edited the user, and made sure it had **Read and write to any database** assigned under **Database User Privileges**. I also reset the password to something simple and alphanumeric while I was there, waited about a minute for the change to propagate, then restarted the server. That resolved it for good.
 
 ---
 
@@ -509,7 +517,7 @@ Since the database is initially empty, you should receive an empty array `[]` as
 
 ![Screenshot: Postman POST request with JSON body and successful response](screenshots/19-postman-post-request.png)
 
-Repeat this to add a second task, e.g.:
+To add another task, I reused this same request tab — just updating the JSON body and clicking **Send** again:
 
 ```json
 {
@@ -582,7 +590,7 @@ Open the root `package.json` and replace the `scripts` section:
 
 ### Step 4: Configure the React Proxy
 
-Navigate into the `client` folder and open its `package.json`. Add a `proxy` setting:
+Navigate into the `client` folder and open its `package.json`. Add a `proxy` setting as a top-level key (a sibling to `"name"`, `"version"`, `"dependencies"`, etc.):
 
 ```json
 "proxy": "http://localhost:5000"
@@ -615,7 +623,7 @@ Just like port 5000, open port 3000 in your EC2 security group:
 ![Screenshot: AWS Security Group inbound rules showing port 3000 opened](screenshots/271-security-group-port3000.png)
 ![Screenshot: AWS Security Group inbound rules showing port 3000 opened](screenshots/27-security-group-port3000.png)
 
-Visit `http://<public-ip-address>:3000` in your browser to see the default React welcome page.
+Visit `http://<public-ip-address>:3000` in your browser to see the default React welcome page — the spinning atom logo confirms the dev server is running correctly.
 
 ![Screenshot: Browser showing the default React app landing page](screenshots/28-default-react-page.png)
 
@@ -676,12 +684,14 @@ export default Input;
 
 #### Step 8: Install Axios
 
-Axios is a promise-based HTTP client used to make requests from React to the backend API.
+Axios is a promise-based HTTP client used to make requests from React to the backend API. Install it inside the `client` directory, since it's a frontend dependency:
 
 ```bash
 cd client
 npm install axios
 ```
+
+> Installing a new package like this requires a restart of the dev server (`Ctrl+C` then `npm run dev` from the project root) for the frontend to pick it up.
 
 #### ListTodo.js
 
@@ -778,7 +788,99 @@ export default App;
 
 ### Step 10: Update Styling
 
-Replace the contents of `client/src/App.css` and `client/src/index.css` with your preferred styling for the to-do list layout (input field, button, and list items).
+Replace the contents of `client/src/App.css` and `client/src/index.css` with styling for the to-do list layout. Here's what I used for the input field, button, and list items:
+
+**`client/src/index.css`**
+
+```css
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f4f6f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+```
+
+**`client/src/App.css`**
+
+```css
+.App {
+  max-width: 500px;
+  margin: 60px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Input section */
+input[type="text"] {
+  width: 70%;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  margin-right: 8px;
+}
+
+input[type="text"]:focus {
+  border-color: #4CAF50;
+}
+
+button {
+  padding: 10px 18px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #43a047;
+}
+
+/* Todo list */
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 25px;
+  text-align: left;
+}
+
+li {
+  background-color: #f9f9f9;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  border-left: 4px solid #4CAF50;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+li:hover {
+  background-color: #ffecec;
+  border-left-color: #e53935;
+  transform: translateX(2px);
+}
+```
+
+> CSS changes don't require a dev server restart — `npm run dev` will hot-reload automatically.
 
 ![Screenshot: App.css and index.css with final styling applied](screenshots/31-index-css-styling.png)
 ![Screenshot: App.css and index.css with final styling applied](screenshots/31-app-css-styling.png)
@@ -825,7 +927,7 @@ Send a `GET` request to `http://<public-ip-address>:5000/api/todos` to confirm t
 
 ## Summary
 
-By following this guide, you have:
+By completing this project, I:
 
 1. Set up a Node.js/Express.js backend server on an AWS EC2 instance.
 2. Created RESTful API routes for creating, reading, and deleting tasks.
@@ -834,9 +936,11 @@ By following this guide, you have:
 5. Built a React frontend that communicates with the backend via a proxy configuration.
 6. Deployed and tested a fully functional To-Do application using the complete MERN stack.
 
+Along the way, I ran into and resolved several real-world issues — deprecated Mongoose callback syntax, outdated connection options, authentication failures from unencoded special characters, and an incorrectly scoped database user role — all documented above as troubleshooting notes.
+
 ## Next Steps
 
-The next stack to explore is the **MEAN stack** (MongoDB, Express.js, Angular, Node.js), which replaces React with Angular as the frontend framework.
+The next stack I'll be exploring is the **MEAN stack** (MongoDB, Express.js, Angular, Node.js), which replaces React with Angular as the frontend framework.
 
 ---
 
