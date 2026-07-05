@@ -362,36 +362,34 @@ Create a new database:
 CREATE DATABASE `example_database`;
 ```
 
-### 9.2 Create a User with `mysql_native_password` Authentication
+### 9.2 Create a User and Grant Privileges
+
+> **Note:** The class material assumes `mysql_native_password` is available as an authentication plugin. On newer MySQL versions, this plugin may no longer be installed/available, causing a plugin error when attempting `IDENTIFIED WITH mysql_native_password`. If you hit this error, use the default authentication method instead, as shown below. See Section 11.2 for details on this issue.
 
 ```sql
-CREATE USER 'example_user'@'%' IDENTIFIED WITH mysql_native_password BY 'PassWord.1';
-```
+-- 1. Create the user using the default authentication method (this works)
+CREATE USER 'wacllaw'@'%' IDENTIFIED BY 'Test123$';
 
-> Replace `example_user` and `PassWord.1` with your own username and a secure password of your choosing.
+-- 2. Grant full privileges
+GRANT ALL PRIVILEGES ON *.* TO 'wacllaw'@'%' WITH GRANT OPTION;
 
-### 9.3 Grant Privileges
+-- 3. Apply the changes
+FLUSH PRIVILEGES;
 
-```sql
-GRANT ALL ON example_database.* TO 'example_user'@'%';
-```
-
-This grants `example_user` full privileges over `example_database` only, without allowing them to create or modify other databases on the server.
-
-Exit the MySQL console:
-
-```sql
+-- 4. Exit
 exit
 ```
 
+> Replace `wacllaw` and `Test123$` with your own username and a secure password of your choosing. `WITH GRANT OPTION` additionally allows this user to grant privileges to other users — use with care outside of a learning/demo environment.
+
 ![create database and user](screenshots/23-create-db-user.png)
 
-### 9.4 Verify the New User's Access
+### 9.3 Verify the New User's Access
 
 Log back in using the new user's credentials:
 
 ```bash
-mysql -u example_user -p
+mysql -u wacllaw -p
 ```
 
 Confirm access to the database:
@@ -414,7 +412,7 @@ Expected output:
 
 ![show databases](screenshots/24-show-databases.png)
 
-### 9.5 Create a Test Table
+### 9.4 Create a Test Table
 
 ```sql
 CREATE TABLE example_database.todo_list (
@@ -424,7 +422,7 @@ CREATE TABLE example_database.todo_list (
 );
 ```
 
-### 9.6 Insert Sample Data
+### 9.5 Insert Sample Data
 
 Run the following, repeating with different values as needed:
 
@@ -432,7 +430,7 @@ Run the following, repeating with different values as needed:
 INSERT INTO example_database.todo_list (content) VALUES ("My first important item");
 ```
 
-### 9.7 Confirm the Data Was Saved
+### 9.6 Confirm the Data Was Saved
 
 ```sql
 SELECT * FROM example_database.todo_list;
@@ -460,7 +458,7 @@ exit
 
 ![todo list table](screenshots/25-todo-list-table.png)
 
-### 9.8 Create a PHP Script to Query the Database
+### 9.7 Create a PHP Script to Query the Database
 
 Create a new PHP file in the web root directory:
 
@@ -472,8 +470,8 @@ Add the following content:
 
 ```php
 <?php
-$user = "example_user";
-$password = "PassWord.1";
+$user = "wacllaw";
+$password = "Test123$";
 $database = "example_database";
 $table = "todo_list";
 
@@ -494,7 +492,7 @@ Save and close the file.
 
 ![todo list php script](screenshots/26-todo-list-php.png)
 
-### 9.9 Verify in the Browser
+### 9.8 Verify in the Browser
 
 Navigate to:
 
@@ -519,7 +517,7 @@ In this implementation, the following was accomplished:
 - Installed **PHP** and its required extensions
 - Configured NGINX to process PHP requests via a custom server block
 - Verified the complete stack using a PHP info page
-- Created a MySQL database, user (with `mysql_native_password` authentication), and test table
+- Created a MySQL database, user, and test table
 - Built a PHP script using PDO to query and display MySQL data in the browser
 
 This confirms a fully functional **LEMP stack** (Linux, NGINX, MySQL, PHP) running on AWS EC2, ready to host dynamic web applications and interact with a database.
@@ -591,3 +589,35 @@ sudo systemctl reload nginx
 **Result:** `curl http://localhost` returned the expected page content instead of a 502, and the site loaded correctly via the public IP. This fix is already reflected in the server block shown in Section 7.3.
 
 **Lesson:** Always confirm the actual installed PHP version and its corresponding FPM socket path (`ls /var/run/php/`) rather than assuming a version number from a tutorial — package managers may install a newer version than the one referenced in written instructions.
+
+### 11.2 Real Incident: `mysql_native_password` Plugin Not Available
+
+**Symptom:** Running the class-provided command to create a MySQL user failed:
+
+```sql
+CREATE USER 'example_user'@'%' IDENTIFIED WITH mysql_native_password BY 'PassWord.1';
+```
+
+MySQL returned a plugin-related error, indicating that `mysql_native_password` was not available/loaded as an authentication plugin.
+
+**Root cause:** The class material assumes `mysql_native_password` is installed and usable by default, which was true on older MySQL 8.0 releases. On newer MySQL versions, this plugin may be disabled, removed, or not installed by default, since MySQL has been moving toward `caching_sha2_password` as the standard default authentication method.
+
+**Fix:** Create the user with the server's default authentication method instead of explicitly specifying `mysql_native_password`, then grant privileges as needed:
+
+```sql
+-- 1. Create the user using the default authentication method (this works)
+CREATE USER 'wacllaw'@'%' IDENTIFIED BY 'Test123$';
+
+-- 2. Grant full privileges
+GRANT ALL PRIVILEGES ON *.* TO 'wacllaw'@'%' WITH GRANT OPTION;
+
+-- 3. Apply the changes
+FLUSH PRIVILEGES;
+
+-- 4. Exit
+exit
+```
+
+**Result:** The user was created successfully and could authenticate from the PDO-based PHP script in Section 9.7 without any plugin errors.
+
+**Lesson:** Tutorial steps that hardcode a specific authentication plugin can break on newer database versions where that plugin isn't available. When this happens, falling back to the server's default authentication method (omitting `IDENTIFIED WITH <plugin>`) is a reliable workaround for development/learning environments. In a production environment, it's worth checking which authentication plugins are actually available (`SHOW PLUGINS;`) and scoping privileges more narrowly than `ON *.*` before granting broad access.
