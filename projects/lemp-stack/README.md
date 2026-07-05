@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-LEMP is a technology stack used for hosting and deploying dynamic websites and web applications. It is made up of four components:
+For this project, I implemented a LEMP stack on an AWS EC2 instance. LEMP is a technology stack used for hosting and deploying dynamic websites and web applications, made up of four components:
 
 | Component | Role |
 |---|---|
@@ -11,9 +11,7 @@ LEMP is a technology stack used for hosting and deploying dynamic websites and w
 | **M**ySQL | Relational database management system used for data storage and retrieval |
 | **P**HP | Server-side scripting language used to create dynamic web pages |
 
-Together, these four components work hand-in-hand to create a robust hosting environment for web applications.
-
-This document walks through implementing the LEMP stack on an **AWS EC2 instance**.
+Together, these four components work hand-in-hand to create a robust hosting environment for web applications. In this document, I walk through how I set up and configured each component on an EC2 instance, tested the stack end-to-end, and resolved two real issues I ran into along the way.
 
 ---
 
@@ -33,7 +31,7 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 1. Log in to the **AWS Management Console**.
 2. Navigate to the **EC2 Dashboard**.
 3. Click **Launch Instance**.
-4. Give the instance a name (e.g. `lemp-server`).
+4. Give your instance a name (e.g. `lemp-server`).
 5. Choose the **Ubuntu** Amazon Machine Image (AMI) for stability.
 6. Select **t3.micro** as the instance type (Free Tier eligible).
 7. Configure the key pair:
@@ -44,7 +42,7 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
    - Allow **port 80** (HTTP access from the internet)
 9. Leave storage at the default Free Tier setting (or configure as needed).
 10. Review the configuration summary, then click **Launch Instance**.
-11. Wait for the instance to initialize until its status shows **Running**.
+11. Wait for your instance to initialize until its status shows **Running**.
 
 ![Configuration Page](screenshots/01-aws-lemp.png)
 >
@@ -52,7 +50,7 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 
 ### 3.2 Connect to the Instance via SSH
 
-1. Copy the **Public IP address** of the instance from the EC2 console.
+1. Copy the **Public IP address** of your instance from the EC2 console.
 2. In your terminal, run:
 
    ```bash
@@ -60,12 +58,12 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
    ssh -i LEMP.pem ubuntu@100.52.229.197
    ```
 
-   - `chmod 400` sets the right permissions
+   - `chmod 400` sets the right permissions on your key file.
    - `ssh` initiates the secure connection.
    - `-i` specifies the private key file used for authentication.
    - `ubuntu` is the default username for Ubuntu AMIs.
 
-4. If successful, you should be logged into the remote server as the `ubuntu` user.
+3. If successful, you'll be logged into the remote server as the `ubuntu` user.
 
 ![Successful ssh](screenshots/03-aws-lemp-ssh.png)
 
@@ -75,13 +73,18 @@ This document walks through implementing the LEMP stack on an **AWS EC2 instance
 
 ### 4.1 Update Package Index
 
+Run:
+
 ```bash
 sudo apt update -y && sudo apt upgrade -y
 ```
 ![Sudo apt update](screenshots/04-aws-lemp-sudo-apt-update.png)
-- Reboot the instance for the upgrades to take effect
+
+Reboot the instance for the upgrades to take effect.
 
 ### 4.2 Install NGINX
+
+Run:
 
 ```bash
 sudo apt install nginx -y
@@ -90,17 +93,20 @@ sudo apt install nginx -y
 
 ### 4.3 Verify NGINX Is Running
 
+Run:
+
 ```bash
 sudo systemctl status nginx
 ```
 ![Verify Nginx](screenshots/06-nginx-verify.png)
 
-You can see a status of **active (running)**, highlighted in green.
-
+Look for a status of **active (running)**, highlighted in green.
 
 ### 4.4 Verify Web Server Accessibility
 
 **Option A — via terminal (curl):**
+
+Run:
 
 ```bash
 curl http://100.52.229.197
@@ -118,6 +124,8 @@ Navigate to `http://100.52.229.197` in your browser. You should see the default 
 
 ### 5.1 Install MySQL Server and Verify That It's Running
 
+Run:
+
 ```bash
 sudo apt install mysql-server -y
 sudo systemctl status mysql
@@ -126,6 +134,8 @@ sudo systemctl status mysql
 ![verify mysql](screenshots/10-verify-mysql.png)
 
 ### 5.2 Secure the MySQL Installation
+
+Run:
 
 ```bash
 sudo mysql_secure_installation
@@ -138,6 +148,7 @@ Follow the prompts to:
 - Disallow remote root login
 - Remove the test database
 - Reload privilege tables
+
 ![Secure installation](screenshots/11-mysql-sec-int.png)
 ![Secure installation](screenshots/12-mysql-sec-int.png)
 
@@ -164,9 +175,12 @@ EXIT;
 ```
 
 > **Note:** `GRANT ALL PRIVILEGES` gives the specified user full control (create, read, update, delete) over the specified database. `FLUSH PRIVILEGES` reloads the grant tables so that MySQL immediately recognizes the new permissions — it does **not** delete or clear any data.
+
 ![mysql-password](screenshots/13-create-password-mysql.png)
 
 ### 5.4 Verify Access with the New User
+
+Run:
 
 ```bash
 mysql -u test -p
@@ -188,21 +202,27 @@ You should see `testdb` listed.
 
 ### 6.1 Install PHP and Required Extensions
 
+Run:
+
 ```bash
 sudo apt install php-fpm php-mysql -y
 ```
 
 - **php-fpm** — FastCGI Process Manager; allows NGINX to process PHP requests.
 - **php-mysql** — extension enabling PHP to communicate with MySQL.
+
 ![php version](screenshots/15-install-php.png)
 
 ### 6.2 Verify the PHP Version
+
+Run:
 
 ```bash
 php -v
 ```
 
-Expected output: PHP version (e.g. `PHP 8.5`).
+You should see your installed PHP version (e.g. `PHP 8.5`).
+
 ![php version](screenshots/16-php-version.png)
 
 ---
@@ -210,6 +230,8 @@ Expected output: PHP version (e.g. `PHP 8.5`).
 ## 7. Configuring NGINX to Work with PHP
 
 ### 7.1 Create the Website Root Directory
+
+Run:
 
 ```bash
 sudo mkdir /var/www/projectlemp
@@ -222,15 +244,19 @@ ls /var/www/
 ```
 ![web root directory](screenshots/17-web-root-directory.png)
 
-### 7.2 Assign Ownership to the Current User
+### 7.2 Assign Ownership to Your Current User
+
+Run:
 
 ```bash
 sudo chown -R $USER:$USER /var/www/projectlemp
 ```
 
-`$USER` is an environment variable referring to the currently logged-in user.
+`$USER` is an environment variable referring to your currently logged-in user.
 
 ### 7.3 Create an NGINX Server Block Configuration
+
+Open a new configuration file:
 
 ```bash
 sudo nano /etc/nginx/sites-available/projectlemp
@@ -261,7 +287,7 @@ server {
 }
 ```
 
-> **Important:** The `fastcgi_pass` socket path must match the PHP-FPM version actually installed on the server (confirm with `ls /var/run/php/`) rather than assuming a version number from a tutorial. See the troubleshooting note in Section 11.1 for a real example of what happens when these are mismatched.
+> **Important:** Make sure the `fastcgi_pass` socket path matches the PHP-FPM version actually installed on your server (confirm with `ls /var/run/php/`) rather than assuming a version number from a tutorial. See the troubleshooting note in Section 11.1 for a real example of what happens when these are mismatched.
 
 **Directive breakdown:**
 
@@ -280,11 +306,15 @@ Save and exit (Ctrl+O, Enter, then Ctrl+X in `nano`).
 
 ### 7.4 Enable the Configuration
 
+Run:
+
 ```bash
 sudo ln -s /etc/nginx/sites-available/projectlemp /etc/nginx/sites-enabled/
 ```
 
 ### 7.5 Test for Syntax Errors
+
+Run:
 
 ```bash
 sudo nginx -t
@@ -296,11 +326,15 @@ You should see a message confirming the syntax is OK and the test was successful
 
 ### 7.6 Disable the Default NGINX Site
 
+Run:
+
 ```bash
 sudo unlink /etc/nginx/sites-enabled/default
 ```
 
 ### 7.7 Reload NGINX
+
+Run:
 
 ```bash
 sudo systemctl reload nginx
@@ -312,6 +346,8 @@ sudo systemctl reload nginx
 ## 8. Testing the Full LEMP Setup
 
 ### 8.1 Create a PHP Info File
+
+Change into your project directory and open a new file:
 
 ```bash
 cd /var/www/projectlemp
@@ -326,6 +362,7 @@ phpinfo();
 ```
 
 Save and exit.
+
 ![php file](screenshots/21-php-contents.png)
 
 ### 8.2 Verify in the Browser
@@ -344,9 +381,9 @@ You should see the default **PHP Info** page, displaying details about your PHP 
 
 ## 9. Retrieving Data from MySQL with PHP
 
-In this step, a test database with a simple "To-Do List" is created and queried through a PHP script, confirming that PHP can successfully connect to and retrieve data from MySQL.
+In this step, create a test database with a simple "To-Do List" and query it through a PHP script, confirming that PHP can successfully connect to and retrieve data from MySQL.
 
-> **Note:** The native MySQL PHP library (`mysqlnd`) does not support `caching_sha2_password`, which is the default authentication method in MySQL 8. To connect from PHP, a new user must be created using the `mysql_native_password` authentication method instead.
+> **Note:** The native MySQL PHP library (`mysqlnd`) does not support `caching_sha2_password`, which is the default authentication method in MySQL 8. To connect from PHP, you'll need to create a new user using the `mysql_native_password` authentication method instead (or the fallback shown in 9.2 if that plugin isn't available).
 
 ### 9.1 Create the Database
 
@@ -365,6 +402,8 @@ CREATE DATABASE `example_database`;
 ### 9.2 Create a User and Grant Privileges
 
 > **Note:** The class material assumes `mysql_native_password` is available as an authentication plugin. On newer MySQL versions, this plugin may no longer be installed/available, causing a plugin error when attempting `IDENTIFIED WITH mysql_native_password`. If you hit this error, use the default authentication method instead, as shown below. See Section 11.2 for details on this issue.
+
+Run:
 
 ```sql
 -- 1. Create the user using the default authentication method (this works)
@@ -414,6 +453,8 @@ Expected output:
 
 ### 9.4 Create a Test Table
 
+Run:
+
 ```sql
 CREATE TABLE example_database.todo_list (
     item_id INT AUTO_INCREMENT,
@@ -431,6 +472,8 @@ INSERT INTO example_database.todo_list (content) VALUES ("My first important ite
 ```
 
 ### 9.6 Confirm the Data Was Saved
+
+Run:
 
 ```sql
 SELECT * FROM example_database.todo_list;
@@ -500,7 +543,7 @@ Navigate to:
 http://ip-address/todo_list.php
 ```
 
-You should see a rendered list showing the content inserted into the `todo_list` table, confirming that PHP is correctly connecting to and querying MySQL.
+You should see a rendered list showing the content you inserted into the `todo_list` table, confirming that PHP is correctly connecting to and querying MySQL.
 
 ![todo list browser output](screenshots/27-todo-list-browser.png)
 
@@ -508,7 +551,7 @@ You should see a rendered list showing the content inserted into the `todo_list`
 
 ## 10. Summary
 
-In this implementation, the following was accomplished:
+By completing this project, I built a fully functional LEMP stack (Linux, NGINX, MySQL, PHP) on an AWS EC2 instance, ready to host dynamic web applications and interact with a database. Specifically, I:
 
 - Provisioned and configured an AWS EC2 instance (Ubuntu, t3.micro)
 - Connected to the instance securely via SSH
@@ -520,19 +563,19 @@ In this implementation, the following was accomplished:
 - Created a MySQL database, user, and test table
 - Built a PHP script using PDO to query and display MySQL data in the browser
 
-This confirms a fully functional **LEMP stack** (Linux, NGINX, MySQL, PHP) running on AWS EC2, ready to host dynamic web applications and interact with a database.
+Along the way, I also diagnosed and resolved two real issues — a PHP-FPM socket mismatch causing a 502 error, and a missing `mysql_native_password` authentication plugin — both of which are documented in the troubleshooting section below.
 
 ---
 
 ## 11. Notes / Troubleshooting
 
 - If `nginx -t` reports errors, revisit the server block configuration for typos, especially in the `fastcgi_pass` socket path (must match your installed PHP version, e.g. `php8.5-fpm.sock`).
-- If the instance is stopped/restarted, note that the **Public IP** may change (unless an Elastic IP is assigned), while the **Private IP** typically remains the same.
+- If your instance is stopped/restarted, note that the **Public IP** may change (unless an Elastic IP is assigned), while the **Private IP** typically remains the same.
 - To avoid ongoing AWS charges, terminate the instance once the project has been submitted and assessed, unless it's needed for a dependent follow-up project.
 
 ### 11.1 Real Incident: 502 Bad Gateway (PHP-FPM Socket Mismatch)
 
-**Symptom:** Visiting the site's public IP returned nothing, and `curl http://localhost` on the server returned:
+**Symptom:** When I visited the site's public IP, nothing loaded, and `curl http://localhost` on the server returned:
 
 ```
 502 Bad Gateway
@@ -541,33 +584,33 @@ nginx/1.28.3 (Ubuntu)
 
 **Diagnosis steps:**
 
-1. Confirmed NGINX itself was reachable locally (`curl http://localhost` returned a response, just a 502 — ruling out a security group/firewall issue).
-2. Checked the PHP-FPM service referenced in the NGINX config:
+1. I confirmed NGINX itself was reachable locally (`curl http://localhost` returned a response, just a 502 — ruling out a security group/firewall issue).
+2. I checked the PHP-FPM service referenced in my NGINX config:
    ```bash
    sudo systemctl status php8.3-fpm
    ```
    Result: `Unit php8.3-fpm.service could not be found.`
-3. Checked the actual installed PHP version:
+3. I checked the actual installed PHP version:
    ```bash
    php -v
    ```
    Result: `PHP 8.5.4`
-4. Confirmed the actual running FPM service and socket:
+4. I confirmed the actual running FPM service and socket:
    ```bash
    systemctl list-units --type=service | grep php
    ls /var/run/php/
    ```
-   Result: `php8.5-fpm.service` was active, with socket `php8.5-fpm.sock` — not `php8.3-fpm.sock` as referenced in the NGINX config.
+   Result: `php8.5-fpm.service` was active, with socket `php8.5-fpm.sock` — not `php8.3-fpm.sock` as referenced in my NGINX config.
 
-**Root cause:** The NGINX server block's `fastcgi_pass` directive was pointing to `php8.3-fpm.sock`, but the server had PHP 8.5 installed, whose FPM socket is `php8.5-fpm.sock`. NGINX couldn't find the backend socket to forward PHP requests to, resulting in a 502.
+**Root cause:** My NGINX server block's `fastcgi_pass` directive was pointing to `php8.3-fpm.sock`, but the server had PHP 8.5 installed, whose FPM socket is `php8.5-fpm.sock`. NGINX couldn't find the backend socket to forward PHP requests to, resulting in a 502.
 
-**Fix:**
+**Fix:** I opened the config file:
 
 ```bash
 sudo nano /etc/nginx/sites-available/projectlemp
 ```
 
-Updated the line:
+and updated the line:
 
 ```nginx
 fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
@@ -579,7 +622,7 @@ to:
 fastcgi_pass unix:/var/run/php/php8.5-fpm.sock;
 ```
 
-Then tested and reloaded:
+Then I tested and reloaded:
 
 ```bash
 sudo nginx -t
@@ -592,7 +635,7 @@ sudo systemctl reload nginx
 
 ### 11.2 Real Incident: `mysql_native_password` Plugin Not Available
 
-**Symptom:** Running the class-provided command to create a MySQL user failed:
+**Symptom:** When I ran the class-provided command to create a MySQL user:
 
 ```sql
 CREATE USER 'example_user'@'%' IDENTIFIED WITH mysql_native_password BY 'PassWord.1';
@@ -602,7 +645,7 @@ MySQL returned a plugin-related error, indicating that `mysql_native_password` w
 
 **Root cause:** The class material assumes `mysql_native_password` is installed and usable by default, which was true on older MySQL 8.0 releases. On newer MySQL versions, this plugin may be disabled, removed, or not installed by default, since MySQL has been moving toward `caching_sha2_password` as the standard default authentication method.
 
-**Fix:** Create the user with the server's default authentication method instead of explicitly specifying `mysql_native_password`, then grant privileges as needed:
+**Fix:** I created the user with the server's default authentication method instead of explicitly specifying `mysql_native_password`, then granted privileges as needed:
 
 ```sql
 -- 1. Create the user using the default authentication method (this works)
