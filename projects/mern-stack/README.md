@@ -612,6 +612,7 @@ Just like port 5000, open port 3000 in your EC2 security group:
 2. Add a new rule for port `3000`, source `Anywhere`.
 3. Click **Save**.
 
+![Screenshot: AWS Security Group inbound rules showing port 3000 opened](screenshots/271-security-group-port3000.png)
 ![Screenshot: AWS Security Group inbound rules showing port 3000 opened](screenshots/27-security-group-port3000.png)
 
 Visit `http://<public-ip-address>:3000` in your browser to see the default React welcome page.
@@ -751,7 +752,9 @@ const Todo = () => {
 export default Todo;
 ```
 
-![Screenshot: Todo.js, Input.js, and ListTodo.js files open in the editor](screenshots/30-components-code.png)
+![Screenshot: Todo.js, Input.js, and ListTodo.js files open in the editor](screenshots/30-input-components-code.png)
+![Screenshot: Todo.js, Input.js, and ListTodo.js files open in the editor](screenshots/30-todo-components-code.png)
+![Screenshot: Todo.js, Input.js, and ListTodo.js files open in the editor](screenshots/30-listtodo-components-code.png)
 
 ### Step 9: Update App.js
 
@@ -777,7 +780,8 @@ export default App;
 
 Replace the contents of `client/src/App.css` and `client/src/index.css` with your preferred styling for the to-do list layout (input field, button, and list items).
 
-![Screenshot: App.css and index.css with final styling applied](screenshots/31-css-styling.png)
+![Screenshot: App.css and index.css with final styling applied](screenshots/31-index-css-styling.png)
+![Screenshot: App.css and index.css with final styling applied](screenshots/31-app-css-styling.png)
 
 ---
 
