@@ -497,7 +497,7 @@ Save and close the file.
 Navigate to:
 
 ```
-http://100.52.229.197/todo_list.php
+http://ip-address/todo_list.php
 ```
 
 You should see a rendered list showing the content inserted into the `todo_list` table, confirming that PHP is correctly connecting to and querying MySQL.
