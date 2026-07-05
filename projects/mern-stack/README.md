@@ -198,7 +198,7 @@ cd routes
 touch api.js
 ```
 
-Open `api.js` with nano and add the route logic:
+Open `api.js` and add the route logic:
 
 ```javascript
 const express = require('express');
@@ -295,10 +295,10 @@ Return to `routes/api.js` and ensure it references the `Todo` model created abov
 #### Configure Network Access
 
 1. Go to **Network Access**.
-2. Click **Add New IP Address**.
+2. Click **Add IP Address**.
 3. In the IP address field, enter `0.0.0.0/0` (this allows access from anywhere).
 4. Set the temporary access duration (e.g., one week) if prompted.
-5. Click **Save**.
+5. Click **Confirm**/**Save**.
 
 ![Screenshot: MongoDB Atlas Network Access settings showing "Allow access from anywhere"](screenshots/12-atlas-network-access.png)
 
@@ -355,7 +355,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Connect to the database
-mongoose.connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.DB)
   .then(() => console.log('Database connected successfully'))
   .catch(err => console.log(err));
 
@@ -393,6 +393,20 @@ node index.js
 You should now see: `Database connected successfully`
 
 ![Screenshot: Terminal showing "Database connected successfully" message](screenshots/16-database-connected.png)
+
+> **Troubleshooting: `MongoParseError: options usenewurlparser, useunifiedtopology are not supported`**
+>
+> If you're using a newer version of the MongoDB Node.js driver (which Mongoose relies on), you may see this error when starting the server. The `useNewUrlParser` and `useUnifiedTopology` options were required in older driver versions but are now default behavior — recent driver versions reject them instead of silently ignoring them.
+>
+> **Fix:** Remove both options from the `mongoose.connect()` call so it looks like this:
+>
+> ```javascript
+> mongoose.connect(process.env.DB)
+>   .then(() => console.log('Database connected successfully'))
+>   .catch(err => console.log(err));
+> ```
+>
+> Save `index.js` and run `node index.js` again — the server should now connect successfully.
 
 ---
 
