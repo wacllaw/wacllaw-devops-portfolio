@@ -30,7 +30,7 @@ This website documents all my hands-on projects as I build real-world skills in 
 
 **Last Updated**: June 2026
 
-[View All Projects →](./projects/)
+[View All Projects →](./projects)
 
 ---
 
