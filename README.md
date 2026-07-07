@@ -7,7 +7,8 @@ Welcome to my DevOps portfolio! Here I document all my hands-on projects in Clou
 
 - **[LAMP Stack on AWS](./projects/lamp-stack/README.md)** - Linux, Apache, MySQL, PHP
 - **[LEMP Stack on AWS](./projects/lemp-stack/README.md)** - Linux, Nginx, MySQL, PHP
-- **[MERN Stack on AWS](./projects/mern-stack/README.md)**
+- **[MERN Stack on AWS](./projects/mern-stack/README.md)** - MongoDB, Express.js, React.js, Node.js
+- **[MEAN Stack on AWS](./projects/mean-stack/README.md)** - 
 - [More Projects Coming Soon...]
 
 ---
