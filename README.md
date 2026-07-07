@@ -14,4 +14,4 @@ Welcome to my DevOps portfolio! Here I document all my hands-on projects in Clou
 ---
 
 **Cohort**: DevOps/Cloud Engineering 2026-2  
-**Last Updated**: June 2026
+**Last Updated**: July 2026
