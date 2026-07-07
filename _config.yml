@@ -21,3 +21,6 @@ highlighter: rouge
 header_pages:
   - README.md
   - projects/lamp-stack/README.md
+  - projects/lemp-stack/README.md
+  - projects/mern-stack/README.md
+  - projects/mean-stack/README.md
