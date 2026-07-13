@@ -40,7 +40,7 @@ ssh -i "your-key.pem" ubuntu@<your-ec2-public-ip>
 Once connected, update the package list to ensure you're working with the latest available package versions.
 
 ```bash
-sudo apt update
+sudo apt update -y && sudo apt upgrade -y
 ```
 
 ![Screenshot: Output of sudo apt update command](screenshots/02-apt-update.png)
@@ -80,8 +80,7 @@ sudo apt install -y npm
 Confirm both Node.js and npm installed correctly by checking their versions.
 
 ```bash
-node -v
-npm -v
+node -v && npm -v
 ```
 
 ![Screenshot: Node.js and npm version output](screenshots/06-node-npm-version.png)
